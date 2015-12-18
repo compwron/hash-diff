@@ -1,4 +1,3 @@
-# require 'spec_helper'
 require 'simplecov'
 SimpleCov.start do
   coverage_dir 'simplecov'
@@ -8,14 +7,37 @@ require 'bigdecimal'
 require 'bigdecimal/util'
 
 describe 'Hash' do
-  let(:double10) { 10.to_d }
-  let(:double20) { 20.to_d }
-  it "??" do
-    plain = [nil, double10, double10, double20, 1].combination(2).map {|a, b|
-      {a => b}.diff({b => a})
-    }
+  subject { [{1 => val1}.diff({1=> val2}), {1 => val2}.diff({1=> val1})] }
 
-    with = [{nil=>double10, double10=>nil}, {nil=>double10, double10=>nil}, {nil=>double20, double20=>nil}, {nil=>1, 1=>nil}, {}, {double10=>double20, double20=>double10}, {double10=>1, 1=>double10}, {double10=>double20, double20=>double10}, {double10=>1, 1=>double10}, {double20=>1, 1=>double20}]
-    expect(plain).to eq with
+  context "with equal BigDecimals" do
+    let(:val1) { 10.to_d }
+    let(:val2) { 10.to_d }
+    it "has empty diffs" do
+      expect(subject).to eq([{}, {}])
+    end
+  end
+
+  context "with unequal BigDecimals" do
+    let(:val1) { 10.to_d }
+    let(:val2) { 20.to_d }
+    it "has diffs in both directions" do
+      expect(subject).to eq([{1=>10.0}, {1=>20.0}])
+    end
+  end
+
+  context "with BigDecimal and nil" do
+    let(:val1) { 10.to_d }
+    let(:val2) { nil }
+    it "has diffs in both directions" do
+      expect(subject).to eq([{1=>10.0}, {1=>nil}])
+    end
+  end
+
+  context "with BigDecimal and non-BigDecimal" do
+    let(:val1) { 10.to_d }
+    let(:val2) { "hi" }
+    it "has diffs in both directions" do
+      expect(subject).to eq([{1=>10.0}, {1=>"hi"}])
+    end
   end
 end
