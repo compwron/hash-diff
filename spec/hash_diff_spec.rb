@@ -40,4 +40,20 @@ describe 'Hash' do
       expect(subject).to eq([{1=>10.0}, {1=>"hi"}])
     end
   end
+
+  context "with nonequal non-BigDecimals" do
+    let(:val1) { "foo" }
+    let(:val2) { "bar" }
+    it "has diffs in both directions" do
+      expect(subject).to eq([{1=>"foo"}, {1=>"bar"}])
+    end
+  end
+
+  context "with equal non-BigDecimals" do
+    let(:val1) { "foo" }
+    let(:val2) { "foo" }
+    it "has empty diffs" do
+      expect(subject).to eq([{}, {}])
+    end
+  end
 end
